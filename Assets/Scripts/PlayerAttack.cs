@@ -6,14 +6,28 @@ public class PlayerAttack : MonoBehaviour
 {
     public Transform bulletSpawnPoint;
     public GameObject bulletPrefab;
-    public float bulletSpeed = 10;
+    public float firingRate = 0.2f;
+    
+    float TimeUntilFire;
+    PlayerMovement pm;
  
+    private void Start()
+    {
+        pm = gameObject.GetComponent<PlayerMovement>();
+    }
     void Update()
     {
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetMouseButtonDown(0) && TimeUntilFire < Time.time)
         {
-            var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
-            bullet.GetComponent<Rigidbody2D>().velocity = bulletSpawnPoint.right * bulletSpeed;
+            Attack();
+            TimeUntilFire = Time.time + firingRate;
         }
+        
+    }
+
+    private void Attack()
+    {
+        float angle = pm.isFacingRight ? 0f : 180f;
+        Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
     }
 }

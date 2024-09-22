@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
-    public float life = 3;
+    public float bulletSpeed = 15f;
+    public float bulletDamage = 10f;
+    public Rigidbody2D rb;
+    
  
-    void Awake()
+    public void FixedUpdate()
     {
-        Destroy(gameObject, life);
+        rb.velocity = transform.right * bulletSpeed;
     }
  
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Destroy(collision.gameObject);
+        collision.gameObject.GetComponent<EnemyHealth>().TakeDamage(1);
         Destroy(gameObject);
     }
 }
