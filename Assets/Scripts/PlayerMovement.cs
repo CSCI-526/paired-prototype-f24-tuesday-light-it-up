@@ -10,11 +10,13 @@ public class PlayerMovement : MonoBehaviour
     public bool isJumping;
     private Rigidbody2D rb;
     [HideInInspector] public bool isFacingRight = true;
+    private Vector3 startPosition;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        startPosition = transform.position; // Store the initial starting position
     }
 
     // Update is called once per frame
@@ -37,16 +39,19 @@ public class PlayerMovement : MonoBehaviour
             isFacingRight = false;
         }
     }
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
         }
-        if (other.gameObject.CompareTag("Enemy")) {
-            Destroy(gameObject);
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            transform.position = startPosition; // Move player back to start position
         }
     }
+
     private void OnCollisionExit2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
