@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public GameObject startPoint;
+    public GameObject Player;
     public float speed;
     private float Move;
     public float jump;
@@ -44,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
             isJumping = false;
         }
         if (other.gameObject.CompareTag("Enemy")) {
-            Destroy(gameObject);
+            Player.transform.position = startPoint.transform.position;
         }
     }
     private void OnCollisionExit2D(Collision2D other)
