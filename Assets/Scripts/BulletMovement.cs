@@ -23,7 +23,7 @@ public class BulletMovement : MonoBehaviour
     {
         if (hit)
         {
-            return;
+            Deactivate();
         }
         float movementSpeed = bulletSpeed * Time.deltaTime * direction;
         transform.Translate(movementSpeed, 0, 0);
