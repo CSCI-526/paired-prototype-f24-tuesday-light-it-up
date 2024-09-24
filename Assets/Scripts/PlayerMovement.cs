@@ -8,96 +8,134 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private float jumpPower;
-    private Rigidbody2D player;
-    private int jumpCounter;
-    private BoxCollider2D boxCollider;
-    private float wallJumpCooldown;
     private float horizontalInput;
+    private float speed = 8f;
+    private float jumpingPower = 16f;
+    public bool isFacingRight = true;
 
-    [HideInInspector] public bool isFacingRight;
+    private bool isWallSliding;
+    private float wallSlidingSpeed = 2f;
+
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private LayerMask wallLayer;
+
+    private bool isWallJumping;
+    private float wallJumpingDirection;
+    private float wallJumpingTime = 0.2f;
+    private float wallJumpingCounter;
+    private float wallJumpingDuration = 0.4f;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+
+    private BoxCollider2D boxCollider;
     [SerializeField] private Transform startPosition;
 
     // Start is called before the first frame update
     private void Awake()
     {
-        jumpCounter = 0;
-        isFacingRight = true;
-        player = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        
 
-        //Flip player's facing direction
-        if (horizontalInput > 0.01f)
-        {
-            transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            isFacingRight = true;
-        }
-        else if (horizontalInput < -0.01f)
-        {
-            transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
-            isFacingRight = false;
+        if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)) && isGrounded()){
+            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
         }
 
-        //Wall jump
-        if (wallJumpCooldown < 0.2f)
+        if ((Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.J)) && rb.velocity.y > 0f)
         {
-
-            player.velocity = new Vector2(speed * horizontalInput, player.velocity.y);
-
-            if (onWall() && !isGrounded())
-            {
-                player.gravityScale = 0;
-                player.velocity = Vector2.zero;
-            }
-            else
-                player.gravityScale = 1;
-
-            if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)) && jumpCounter != 1)
-            {
-                jumpCounter++;
-                if (isGrounded())
-                {
-                    jumpCounter = 0;
-                    player.velocity = new Vector2(player.velocity.x, jumpPower);
-                }
-                else if (onWall() && !isGrounded())
-                {
-                    if (horizontalInput == 0)
-                    {
-                        player.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
-                        transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-                    }
-                    else
-                        player.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
-
-                    wallJumpCooldown = 0;
-                }
-            }
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
-        else
-            wallJumpCooldown += Time.deltaTime;
 
+        WallSlide();
+        WallJump();
+
+        if (!isWallJumping)
+        {
+            Flip();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
+    }
+
+    private void Flip()
+    {
+        if (isFacingRight && horizontalInput < 0f || !isFacingRight && horizontalInput > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
     }
 
     private bool isGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
-        return raycastHit.collider != null;
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
     
-    private bool onWall()
+    private void WallSlide()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
-        return raycastHit.collider != null;
+        if (isWalled() && !isGrounded() && horizontalInput != 0f)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+            isWallSliding = false;
+    }
+
+    private bool isWalled()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    private void WallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJumping = false;
+            wallJumpingDirection = -transform.localScale.x;
+            wallJumpingCounter = wallJumpingTime;
+
+            CancelInvoke(nameof(StopWallJumping));
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+
+        if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)) && wallJumpingCounter > 0f)
+        {
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpingCounter = 0;
+
+            if (transform.localScale.x != wallJumpingDirection)
+            {
+                isFacingRight = !isFacingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
+
+            Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        }
+    }
+
+    private void StopWallJumping()
+    {
+        isWallJumping = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
