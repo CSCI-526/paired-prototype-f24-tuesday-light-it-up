@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     private float jumpingPower = 16f;
     public bool isFacingRight = true;
 
+    private bool doubleJump;
+
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
 
@@ -32,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider;
     [SerializeField] private Transform startPosition;
 
+    private Camera mainCamera;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -44,8 +48,18 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)) && isGrounded()){
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+        if (isGrounded() && (Input.GetKeyDown(KeyCode.J) || Input.GetButtonDown("Jump")))
+        {
+            doubleJump = false;
+        }
+
+        if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)){
+            if (isGrounded() || doubleJump)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                doubleJump = !doubleJump;
+            }
+            
         }
 
         if ((Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.J)) && rb.velocity.y > 0f)
@@ -72,10 +86,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public bool canAttack()
-    {
-        return true;
-    }
 
     private void Flip()
     {

@@ -11,6 +11,9 @@ public class PlayerAttack : MonoBehaviour
     private PlayerMovement playerMovement;
     private float cooldownTimer = Mathf.Infinity;
 
+    private Camera mainCamera;
+    private FinishLine finishline;
+
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -18,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.K)) && cooldownTimer > attackCooldown && playerMovement.canAttack())
+        if ((Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.K)) && cooldownTimer > attackCooldown && finishline.canAttack)
             Attack();
 
         cooldownTimer += Time.deltaTime;

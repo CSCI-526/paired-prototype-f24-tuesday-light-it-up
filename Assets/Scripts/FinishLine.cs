@@ -7,6 +7,7 @@ public class FinishLine : MonoBehaviour
 {
     // Reference to the Main Camera
     private Camera mainCamera;
+    public bool canAttack = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,11 +30,14 @@ public class FinishLine : MonoBehaviour
         // Change the background color to red
         if (mainCamera.backgroundColor == Color.red)
         {
+            canAttack = false;
             mainCamera.backgroundColor = Color.black;
         }
         else
         {
+            canAttack = true;
             mainCamera.backgroundColor = Color.red;
+
         }
            
        // }
