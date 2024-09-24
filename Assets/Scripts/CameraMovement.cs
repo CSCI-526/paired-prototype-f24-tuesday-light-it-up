@@ -9,11 +9,13 @@ public class CameraMovement : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
 
     [SerializeField] private Transform target;
+    private Camera mainCamera;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        mainCamera = Camera.main;
+        mainCamera.backgroundColor = Color.black;
     }
 
     // Update is called once per frame
