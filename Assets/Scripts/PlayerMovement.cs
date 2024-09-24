@@ -43,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
-        
 
         if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)) && isGrounded()){
             rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
@@ -61,6 +60,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Flip();
         }
+
+
     }
 
     private void FixedUpdate()
@@ -69,6 +70,11 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
         }
+    }
+
+    public bool canAttack()
+    {
+        return true;
     }
 
     private void Flip()

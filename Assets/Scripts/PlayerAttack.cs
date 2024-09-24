@@ -4,30 +4,41 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public Transform bulletSpawnPoint;
-    public GameObject bulletPrefab;
-    public float firingRate = 0.2f;
-    
-    float TimeUntilFire;
-    PlayerMovement pm;
- 
-    private void Start()
+    [SerializeField] private float attackCooldown;
+    [SerializeField] private Transform bulletPosition;
+    [SerializeField] private GameObject[] bullets;
+
+    private PlayerMovement playerMovement;
+    private float cooldownTimer = Mathf.Infinity;
+
+    private void Awake()
     {
-        pm = gameObject.GetComponent<PlayerMovement>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
-    void Update()
+
+    private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && TimeUntilFire < Time.time)
-        {
+        if ((Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.K)) && cooldownTimer > attackCooldown && playerMovement.canAttack())
             Attack();
-            TimeUntilFire = Time.time + firingRate;
-        }
-        
+
+        cooldownTimer += Time.deltaTime;
     }
 
     private void Attack()
     {
-        float angle = pm.isFacingRight ? 0f : 180f;
-        Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.Euler(new Vector3(0f, 0f, angle)));
+        cooldownTimer = 0;
+
+        bullets[FindBullet()].transform.position = bulletPosition.position;
+        bullets[FindBullet()].GetComponent<BulletMovement>().SetDirection(Mathf.Sign(transform.localScale.x));
+    }
+
+    private int FindBullet()
+    {
+        for(int i = 0; i < bullets.Length; i++)
+        {
+            if (!bullets[i].activeInHierarchy)
+                return i;
+        }
+        return 0;
     }
 }
