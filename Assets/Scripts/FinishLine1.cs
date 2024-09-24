@@ -1,16 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class FinishLine : MonoBehaviour
+public class FinishLine1 : MonoBehaviour
 {
-    // Reference to the Main Camera
     private Camera mainCamera;
     private CameraMovement cm;
+    public bool canAttack = false;
     
-    public bool canDoubleJump = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -22,33 +19,26 @@ public class FinishLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (canDoubleJump)
+        if (canAttack)
         {
-            canDoubleJump = false;
-            cm.MinusColor(255, 0, 0);
+            canAttack = false;
+            cm.MinusColor(0, 255, 0);
         }
         else
         {
-            canDoubleJump = true;
-            cm.AddColor(255, 0, 0);
+            canAttack = true;
+            cm.AddColor(0, 255, 0);
+
         }
-           
-       // }
+
+        // }
     }
 
-    
-    /*
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            SceneManager.LoadScene("Level2");
-        }
-    }
-    */
+
+
 }

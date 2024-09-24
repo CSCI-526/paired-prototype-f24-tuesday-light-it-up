@@ -35,12 +35,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform startPosition;
 
     private Camera mainCamera;
+    private FinishLine finishline;
 
     // Start is called before the first frame update
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        finishline = FindObjectOfType<FinishLine>();
     }
 
     // Update is called once per frame
@@ -48,13 +50,15 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
+        
         if (isGrounded() && (Input.GetKeyDown(KeyCode.J) || Input.GetButtonDown("Jump")))
         {
             doubleJump = false;
         }
 
-        if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J)){
-            if (isGrounded() || doubleJump)
+        if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J))
+        {
+            if (isGrounded() || (doubleJump && finishline.canDoubleJump))
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
                 doubleJump = !doubleJump;

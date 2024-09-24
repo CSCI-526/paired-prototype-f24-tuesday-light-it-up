@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FinishLine : MonoBehaviour
+public class FinishLine2 : MonoBehaviour
 {
     // Reference to the Main Camera
     private Camera mainCamera;
     private CameraMovement cm;
-    
-    public bool canDoubleJump = false;
+
+    public bool touched = false;
 
     // Start is called before the first frame update
     void Start()
@@ -27,21 +27,22 @@ public class FinishLine : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (canDoubleJump)
+        if (touched)
         {
-            canDoubleJump = false;
-            cm.MinusColor(255, 0, 0);
+            touched = false;
+            cm.MinusColor(0, 0, 255);
         }
         else
         {
-            canDoubleJump = true;
-            cm.AddColor(255, 0, 0);
+            touched = true;
+            cm.AddColor(0, 0, 255);
+            SceneManager.LoadScene("Level2");
         }
-           
-       // }
+
+        // }
     }
 
-    
+
     /*
     private void OnCollisionEnter2D(Collision2D other)
     {
