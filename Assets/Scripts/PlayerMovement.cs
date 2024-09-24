@@ -65,7 +65,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
+        if (!isWallJumping)
+        {
+            rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
+        }
     }
 
     private void Flip()
