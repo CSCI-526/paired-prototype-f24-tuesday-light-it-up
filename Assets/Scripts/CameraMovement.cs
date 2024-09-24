@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private Transform target;
     private Camera mainCamera;
 
-    // Start is called before the first frame update
+// Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
@@ -22,6 +23,11 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CompareColorWithRGB(mainCamera.backgroundColor, 100, 100, 100))
+        {
+            SceneManager.LoadScene("Level2");
+        }
+
         Vector3 targetPosition = target.position + offset;
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
     }

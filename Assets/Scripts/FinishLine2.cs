@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class FinishLine2 : MonoBehaviour
 {
@@ -30,13 +29,12 @@ public class FinishLine2 : MonoBehaviour
         if (touched)
         {
             touched = false;
-            cm.MinusColor(0, 0, 255);
+            cm.MinusColor(0, 0, 100);
         }
         else
         {
             touched = true;
-            cm.AddColor(0, 0, 255);
-            SceneManager.LoadScene("Level2");
+            cm.AddColor(0, 0, 100);
         }
 
         // }

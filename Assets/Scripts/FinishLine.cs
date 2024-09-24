@@ -30,12 +30,12 @@ public class FinishLine : MonoBehaviour
         if (canDoubleJump)
         {
             canDoubleJump = false;
-            cm.MinusColor(255, 0, 0);
+            cm.MinusColor(100, 0, 0);
         }
         else
         {
             canDoubleJump = true;
-            cm.AddColor(255, 0, 0);
+            cm.AddColor(100, 0, 0);
         }
            
        // }
