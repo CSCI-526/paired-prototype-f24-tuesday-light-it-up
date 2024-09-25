@@ -21,7 +21,13 @@ public class DeathScript : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Player.transform.position = startPoint.transform.position;
+            // Player.transform.position = startPoint.transform.position;
+            PlayerDied();
         }
+    }
+    public void PlayerDied()
+    {
+        LevelManager.instance.GameOver();
+        gameObject.SetActive(false);
     }
 }
