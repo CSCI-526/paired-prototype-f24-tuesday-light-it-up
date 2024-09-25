@@ -22,7 +22,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetMouseButton(0) || Input.GetKeyDown(KeyCode.K)) && cooldownTimer > attackCooldown && finishline1.canAttack)
+        if (Input.GetKeyDown(KeyCode.K) && cooldownTimer > attackCooldown)// && finishline1.canAttack
             Attack();
 
         cooldownTimer += Time.deltaTime;

@@ -30,7 +30,6 @@ public class BulletMovement : MonoBehaviour
 
         lifetime += Time.deltaTime;
         if (lifetime > 10) gameObject.SetActive(false);
-        //rb.velocity = transform.right * bulletSpeed;
     }
     
     private void OnTriggerEnter2D(Collider2D collision)

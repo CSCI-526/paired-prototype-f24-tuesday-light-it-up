@@ -58,7 +58,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J))
         {
-            if (isGrounded() || (doubleJump && finishline.canDoubleJump))
+            //(doubleJump && finishline.canDoubleJump)
+            if (isGrounded() || doubleJump)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
                 doubleJump = !doubleJump;
