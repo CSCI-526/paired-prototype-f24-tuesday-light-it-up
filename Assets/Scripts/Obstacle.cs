@@ -7,7 +7,6 @@ public class obstacle : MonoBehaviour
     private CameraMovement cm;
     private Camera mainCamera;
     private SpriteRenderer spriteRenderer;
-    private Collider2D collider2D;
     private Color obColor;
     // Start is called before the first frame update
     void Start()
@@ -15,7 +14,6 @@ public class obstacle : MonoBehaviour
         mainCamera = Camera.main;
         cm = FindObjectOfType<CameraMovement>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        collider2D = gameObject.GetComponent<Collider2D>();
         obColor = spriteRenderer.color;
     }
 
@@ -24,16 +22,12 @@ public class obstacle : MonoBehaviour
     {
         if (mainCamera.backgroundColor.Equals(obColor))
         {
-            
             spriteRenderer.enabled = false;
-            //collider2D.enabled = false;
             gameObject.layer = LayerMask.NameToLayer("IgnoreObstacle");
         }
         else
         {
-            
             spriteRenderer.enabled = true;
-            //collider2D.enabled = true;
             gameObject.layer = LayerMask.NameToLayer("Wall");
         }
     }

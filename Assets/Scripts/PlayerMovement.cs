@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -166,7 +167,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            transform.position = startPosition.position; // Move player back to start position
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //transform.position = startPosition.position; // Move player back to start position
         }
     }
 
