@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private float speed = 8f;
     private float jumpingPower = 16f;
     public bool isFacingRight = true;
+    public bool canMove;
 
     private bool doubleJump;
 
@@ -36,49 +37,51 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform startPosition;
 
     private Camera mainCamera;
-    private FinishLine finishline;
 
     // Start is called before the first frame update
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        finishline = FindObjectOfType<FinishLine>();
+        canMove = true;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        
-        if (isGrounded() && (Input.GetKeyDown(KeyCode.J) || Input.GetButtonDown("Jump")))
+        if (canMove)
         {
-            doubleJump = false;
-        }
-
-        if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J))
-        {
-            //(doubleJump && finishline.canDoubleJump)
-            if (isGrounded() || doubleJump)
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            if (isGrounded() && (Input.GetKeyDown(KeyCode.J) || Input.GetButtonDown("Jump")))
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-                doubleJump = !doubleJump;
+                doubleJump = false;
             }
-            
-        }
 
-        if ((Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.J)) && rb.velocity.y > 0f)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-        }
+            if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.J))
+            {
+                //(doubleJump && finishline.canDoubleJump)
+                if (isGrounded() || doubleJump)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                    doubleJump = !doubleJump;
+                }
 
-        WallSlide();
-        WallJump();
+            }
 
-        if (!isWallJumping)
-        {
-            Flip();
+            if ((Input.GetButtonUp("Jump") || Input.GetKeyUp(KeyCode.J)) && rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            }
+
+            WallSlide();
+            WallJump();
+
+            if (!isWallJumping)
+            {
+                Flip();
+            }
         }
 
 
